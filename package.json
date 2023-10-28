@@ -1,0 +1,21 @@
+{
+  "name": "youtuber-statistics-d3-hierarchy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "esbuild.config.js",
+  "scripts": {
+    "start": "node esbuild.config.js && http-server . -p 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.33",
+    "@types/react-dom": "^18.2.14",
+    "esbuild": "^0.19.5",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "http-server": "^14.1.1"
+  }
+}
