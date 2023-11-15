@@ -4,6 +4,7 @@ const { createServer, request } = require("http");
 const { config } = require("dotenv");
 const serveHandler = require("serve-handler");
 const fs = require("fs-extra");
+const aliasConfig = require("./plugins/aliasConfig");
 
 const clients = [];
 
@@ -51,6 +52,7 @@ const getBuildOptions = (clientEnv) => ({
   define: clientEnv,
   outfile: "dist/bundle.js",
   loader: { ".png": "file", ".svg": "file" },
+  plugins: [aliasConfig],
   sourcemap: "inline",
   watch: {
     onRebuild: handleRebuild,
@@ -107,6 +109,7 @@ const handleStaticFileRequests = (req, res) => {
 };
 
 const openBrowser = (port) => {
+  const url = `http://localhost:${port}`;
   const delay = 1000;
   setTimeout(() => {
     const op = {
@@ -114,8 +117,10 @@ const openBrowser = (port) => {
       linux: ["xdg-open"],
       win32: ["cmd", "/c", "start"],
     };
-    if (clients.length === 0)
-      spawn(op[process.platform][0], [`http://localhost:${port}`]);
+    if (clients.length === 0) {
+      console.log(`Server running at ${url}`);
+      spawn(op[process.platform][0], [url]);
+    }
   }, delay);
 };
 

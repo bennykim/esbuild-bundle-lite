@@ -1,6 +1,7 @@
 const esbuild = require("esbuild");
 const { config } = require("dotenv");
 const fs = require("fs-extra");
+const aliasConfig = require("./plugins/aliasConfig");
 
 const runBuild = async () => {
   config();
@@ -29,14 +30,22 @@ const createClientEnvironment = (env) => {
 };
 
 const buildClientBundle = async (clientEnv) => {
-  await esbuild.build({
-    entryPoints: ["src/index.tsx"],
-    bundle: true,
-    minify: true,
-    define: clientEnv,
-    loader: { ".png": "file", ".svg": "file" },
-    outfile: "dist/bundle.js",
-  });
+  await esbuild
+    .build({
+      entryPoints: ["src/index.tsx"],
+      bundle: true,
+      minify: true,
+      define: clientEnv,
+      loader: { ".png": "file", ".svg": "file" },
+      plugins: [aliasConfig],
+      outfile: "dist/bundle.js",
+    })
+    .then((result) => {
+      console.log("Build successful", result);
+    })
+    .catch(() => {
+      process.exit(1);
+    });
 };
 
 runBuild();
