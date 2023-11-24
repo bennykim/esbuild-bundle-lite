@@ -11,7 +11,7 @@ This repository provides a simple boilerplate for setting up projects using esbu
 1. Install dependencies using your preferred package manager (`yarn`):
 
    ```shell
-   yarn
+   yarn install
    ```
 
 2. Start the development server:
@@ -35,4 +35,3 @@ This repository provides a simple boilerplate for setting up projects using esbu
 - [TypeScript](https://www.typescriptlang.org/): A typed superset of JavaScript.
 - [dotenv](https://www.npmjs.com/package/dotenv): Loads environment variables from a .env file.
 - [fs-extra](https://www.npmjs.com/package/fs-extra): File system utilities for Node.js.
-- [serve-handler](https://www.npmjs.com/package/serve-handler): A file server with built-in handling for various file types.

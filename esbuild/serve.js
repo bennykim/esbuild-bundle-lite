@@ -21,14 +21,11 @@ const buildClient = async (clientEnv) => {
   try {
     const context = await esbuild.context(getBuildConfig(clientEnv));
     await context.watch();
-
-    const { port } = await context.serve({
+    await context.serve({
       port: DEFAULT_PORT,
       servedir: DIST_DIR,
       fallback: `${DIST_DIR}/index.html`,
     });
-
-    console.log(`Serving app at http://localhost:${port}.`);
   } catch (err) {
     console.error("Failed to build client:", err);
     process.exit(1);
@@ -39,6 +36,7 @@ const getBuildConfig = (clientEnv) => ({
   entryPoints: ["src/index.tsx"],
   bundle: true,
   sourcemap: true,
+  logLevel: "info",
   define: clientEnv,
   loader: { ".png": "file", ".svg": "file" },
   plugins: [aliasConfig],
