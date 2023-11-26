@@ -1,7 +1,10 @@
 const { aliasPath } = require("esbuild-plugin-alias-path");
+const path = require("path");
 
 const aliasConfig = aliasPath({
-  alias: { "@/": "./src/" },
+  alias: {
+    "@/*": path.resolve(__dirname, "../../src/"),
+  },
 });
 
 module.exports = aliasConfig;
