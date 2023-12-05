@@ -1,10 +1,10 @@
-const esbuild = require("esbuild");
-const aliasConfig = require("./plugins/aliasConfig");
-const {
+import esbuild from "esbuild";
+import { aliasConfig } from "./plugins/aliasConfig.js";
+import {
   prepareDistDirectory,
   createClientEnvironment,
   DIST_DIR,
-} = require("./common");
+} from "./common/index.js";
 
 const runBuild = async () => {
   try {

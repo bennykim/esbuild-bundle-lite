@@ -1,11 +1,11 @@
-const esbuild = require("esbuild");
-const { config } = require("dotenv");
-const aliasConfig = require("./plugins/aliasConfig");
-const {
+import esbuild from "esbuild";
+import { config } from "dotenv";
+import { aliasConfig } from "./plugins/aliasConfig.js";
+import {
   prepareDistDirectory,
   createClientEnvironment,
   DIST_DIR,
-} = require("./common");
+} from "./common/index.js";
 
 config();
 const { PORT } = process.env;
