@@ -3,14 +3,16 @@ import { aliasConfig } from "./plugins/aliasConfig.js";
 import {
   prepareDistDirectory,
   createClientEnvironment,
-  DIST_DIR,
 } from "./common/index.js";
 
-const runBuild = async () => {
+const runBuild = async (config) => {
+  const { distDir, env } = config;
+
   try {
-    await prepareDistDirectory();
-    const clientEnv = createClientEnvironment("production");
-    const result = await esbuild.build(getBuildConfig(clientEnv));
+    await prepareDistDirectory(distDir);
+    const clientEnv = createClientEnvironment(env);
+    const result = await esbuild.build(getBuildConfig(config, clientEnv));
+
     console.log(await esbuild.analyzeMetafile(result.metafile));
     console.log("Build Successful.");
   } catch (error) {
@@ -19,16 +21,20 @@ const runBuild = async () => {
   }
 };
 
-const getBuildConfig = (clientEnv) => ({
-  entryPoints: ["src/index.tsx"],
-  bundle: true,
-  minify: true,
-  metafile: true,
-  logLevel: "debug",
-  define: clientEnv,
-  loader: { ".png": "file", ".svg": "file" },
-  plugins: [aliasConfig],
-  outfile: `${DIST_DIR}/bundle.js`,
-});
+const getBuildConfig = (config, clientEnv) => {
+  const { entry, loader, distDir, outfile } = config;
 
-runBuild();
+  return {
+    entryPoints: entry,
+    bundle: true,
+    minify: true,
+    metafile: true,
+    logLevel: "debug",
+    define: clientEnv,
+    loader: loader,
+    plugins: [aliasConfig],
+    outfile: `${distDir}/${outfile}`,
+  };
+};
+
+export const build = runBuild;

@@ -1,21 +1,24 @@
 import fs from "fs-extra";
+import { transformKeys } from "../utils/format.js";
 
-export const DIST_DIR = "dist";
 const PUBLIC_DIR = "./public";
 
-export async function prepareDistDirectory() {
-  if (fs.existsSync(DIST_DIR)) {
-    await fs.rm(DIST_DIR, { recursive: true });
+export async function prepareDistDirectory(distDir) {
+  if (fs.existsSync(distDir)) {
+    await fs.rm(distDir, { recursive: true });
   }
-  await fs.copy(PUBLIC_DIR, DIST_DIR);
+
+  await fs.copy(PUBLIC_DIR, distDir);
 }
 
-export function createClientEnvironment(env) {
-  const clientEnvironment = { "process.env.NODE_ENV": `'${env}'` };
+export function createClientEnvironment(envObj) {
+  const clientEnvironment = transformKeys(envObj);
+
   Object.keys(process.env).forEach((key) => {
-    if (key.startsWith("CLIENT_")) {
+    if (key.startsWith("CLIENT_") && process.env[key] !== undefined) {
       clientEnvironment[`process.env.${key}`] = `'${process.env[key]}'`;
     }
   });
+
   return clientEnvironment;
 }

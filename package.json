@@ -4,8 +4,8 @@
   "description": "An esbuild and React starter template for project setup",
   "type": "module",
   "scripts": {
-    "dev": "node esbuild/serve.js",
-    "build": "node esbuild/build.js"
+    "dev": "node esbuild/main.js --serve",
+    "build": "node esbuild/main.js --build"
   },
   "devDependencies": {
     "@types/node": "^20.8.10",

@@ -1,30 +1,27 @@
 import esbuild from "esbuild";
-import { config } from "dotenv";
 import { aliasConfig } from "./plugins/aliasConfig.js";
 import {
   prepareDistDirectory,
   createClientEnvironment,
-  DIST_DIR,
 } from "./common/index.js";
 
-config();
-const { PORT } = process.env;
-const DEFAULT_PORT = parseInt(PORT, 10) || 3001;
-
-const runDevServer = async () => {
-  await prepareDistDirectory();
-  const clientEnv = createClientEnvironment("development");
-  await buildClient(clientEnv);
+const runDevServer = async (config) => {
+  const { distDir, env } = config;
+  await prepareDistDirectory(distDir);
+  const clientEnv = createClientEnvironment(env);
+  await buildClient(config, clientEnv);
 };
 
-const buildClient = async (clientEnv) => {
+const buildClient = async (config, clientEnv) => {
+  const { port, distDir } = config;
+
   try {
-    const context = await esbuild.context(getBuildConfig(clientEnv));
+    const context = await esbuild.context(getBuildConfig(config, clientEnv));
     await context.watch();
     await context.serve({
-      port: DEFAULT_PORT,
-      servedir: DIST_DIR,
-      fallback: `${DIST_DIR}/index.html`,
+      port,
+      servedir: distDir,
+      fallback: `${distDir}/index.html`,
     });
   } catch (err) {
     console.error("Failed to build client:", err);
@@ -32,18 +29,22 @@ const buildClient = async (clientEnv) => {
   }
 };
 
-const getBuildConfig = (clientEnv) => ({
-  entryPoints: ["src/index.tsx"],
-  bundle: true,
-  sourcemap: true,
-  logLevel: "info",
-  define: clientEnv,
-  loader: { ".png": "file", ".svg": "file" },
-  plugins: [aliasConfig],
-  outfile: `${DIST_DIR}/bundle.js`,
-  banner: {
-    js: `new EventSource('/esbuild').addEventListener('change', () => location.reload());`,
-  },
-});
+const getBuildConfig = (config, clientEnv) => {
+  const { entry, loader, distDir, outfile } = config;
 
-runDevServer();
+  return {
+    entryPoints: entry,
+    bundle: true,
+    sourcemap: true,
+    logLevel: "info",
+    define: clientEnv,
+    loader: loader,
+    plugins: [aliasConfig],
+    outfile: `${distDir}/${outfile}`,
+    banner: {
+      js: `new EventSource('/esbuild').addEventListener('change', () => location.reload());`,
+    },
+  };
+};
+
+export const serve = runDevServer;
