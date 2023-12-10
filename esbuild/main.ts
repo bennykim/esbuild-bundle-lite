@@ -1,15 +1,15 @@
-import { serve } from "./serve.js";
-import { build } from "./build.js";
-import { config as defaultConfig } from "./config/index.js";
+import { serve } from "./serve";
+import { build } from "./build";
+import { CustomOptions, config as defaultConfig } from "./config";
 import {
   DEVELOPMENT,
   PRODUCTION,
   SERVE_COMMAND,
   BUILD_COMMAND,
   BUNDLE_CONFIG_PATH,
-} from "./constants/index.js";
+} from "./constants";
 
-async function loadUserConfig() {
+async function loadUserConfig(): Promise<CustomOptions | {}> {
   try {
     const userConfig = (await import(BUNDLE_CONFIG_PATH)).default;
     return userConfig;
@@ -18,7 +18,12 @@ async function loadUserConfig() {
   }
 }
 
-async function processCommand(command, config) {
+type Command = typeof SERVE_COMMAND | typeof BUILD_COMMAND;
+
+async function processCommand(
+  command: Command,
+  config: CustomOptions
+): Promise<any> {
   switch (command) {
     case SERVE_COMMAND:
       config.env["nodeEnv"] = DEVELOPMENT;
@@ -33,13 +38,15 @@ async function processCommand(command, config) {
   }
 }
 
-async function executeCommand() {
+async function executeCommand(): Promise<void> {
   const userConfig = await loadUserConfig();
   const config = { ...defaultConfig, ...userConfig };
   const commandLineArgs = process.argv;
+
   const commandToExecute = commandLineArgs.find((arg) =>
     [SERVE_COMMAND, BUILD_COMMAND].includes(arg)
-  );
+  ) as Command;
+
   if (commandToExecute) {
     processCommand(commandToExecute, config);
   } else {

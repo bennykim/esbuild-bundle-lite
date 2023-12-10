@@ -1,11 +1,11 @@
-import esbuild from "esbuild";
-import { aliasConfig } from "./plugins/aliasConfig.js";
-import {
-  prepareDistDirectory,
-  createClientEnvironment,
-} from "./common/index.js";
+import * as esbuild from "esbuild";
+import { aliasConfig } from "./plugins/alias";
+import { prepareDistDirectory, createClientEnvironment } from "./common";
+import { CustomOptions } from "./config";
 
-const runBuild = async (config) => {
+import type { BuildOptions } from "esbuild";
+
+const runBuild = async (config: CustomOptions): Promise<void> => {
   const { distDir, env } = config;
 
   try {
@@ -13,7 +13,12 @@ const runBuild = async (config) => {
     const clientEnv = createClientEnvironment(env);
     const result = await esbuild.build(getBuildConfig(config, clientEnv));
 
-    console.log(await esbuild.analyzeMetafile(result.metafile));
+    if (result.metafile) {
+      console.log(await esbuild.analyzeMetafile(result.metafile));
+    } else {
+      console.error("Metafile is undefined");
+    }
+
     console.log("Build Successful.");
   } catch (error) {
     console.error("Build failed:", error);
@@ -21,7 +26,10 @@ const runBuild = async (config) => {
   }
 };
 
-const getBuildConfig = (config, clientEnv) => {
+const getBuildConfig = (
+  config: CustomOptions,
+  clientEnv: Record<string, string>
+): BuildOptions => {
   const { entry, loader, distDir, outfile } = config;
 
   return {

@@ -1,18 +1,21 @@
-import esbuild from "esbuild";
-import { aliasConfig } from "./plugins/aliasConfig.js";
-import {
-  prepareDistDirectory,
-  createClientEnvironment,
-} from "./common/index.js";
+import * as esbuild from "esbuild";
+import { aliasConfig } from "./plugins/alias";
+import { prepareDistDirectory, createClientEnvironment } from "./common";
+import { CustomOptions } from "./config";
 
-const runDevServer = async (config) => {
+import type { BuildOptions } from "esbuild";
+
+const runDevServer = async (config: CustomOptions): Promise<void> => {
   const { distDir, env } = config;
   await prepareDistDirectory(distDir);
   const clientEnv = createClientEnvironment(env);
   await buildClient(config, clientEnv);
 };
 
-const buildClient = async (config, clientEnv) => {
+const buildClient = async (
+  config: CustomOptions,
+  clientEnv: Record<string, string>
+): Promise<void> => {
   const { port, distDir } = config;
 
   try {
@@ -29,7 +32,10 @@ const buildClient = async (config, clientEnv) => {
   }
 };
 
-const getBuildConfig = (config, clientEnv) => {
+const getBuildConfig = (
+  config: CustomOptions,
+  clientEnv: Record<string, string>
+): BuildOptions => {
   const { entry, loader, distDir, outfile } = config;
 
   return {

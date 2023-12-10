@@ -33,5 +33,4 @@ This repository provides a simple boilerplate for setting up projects using esbu
 - [React](https://reactjs.org/): JavaScript library for building user interfaces.
 - [React DOM](https://reactjs.org/docs/react-dom.html): React package for working with the DOM.
 - [TypeScript](https://www.typescriptlang.org/): A typed superset of JavaScript.
-- [dotenv](https://www.npmjs.com/package/dotenv): Loads environment variables from a .env file.
 - [fs-extra](https://www.npmjs.com/package/fs-extra): File system utilities for Node.js.

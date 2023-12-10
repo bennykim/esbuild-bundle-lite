@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "lib": [
@@ -9,14 +9,11 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "rootDir": "src",
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "useDefineForClassFields": true,
-    "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "noEmit": false,
-    "outDir": "./dist",
+    "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
     "paths": {
