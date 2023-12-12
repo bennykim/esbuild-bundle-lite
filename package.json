@@ -1,10 +1,11 @@
 {
-  "name": "esbuild-react-starter",
+  "name": "mniii-bundle-lite",
   "version": "0.1.0",
-  "description": "An esbuild and React starter template for project setup",
+  "description": "Setting up a simple esbuild-based bundle for React",
   "scripts": {
-    "dev": "ts-node esbuild/main.ts --serve",
-    "build": "ts-node esbuild/main.ts --build"
+    "compile-ts": "ts-node esbuild/main",
+    "dev": "yarn compile-ts --serve",
+    "build": "yarn compile-ts --build"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",

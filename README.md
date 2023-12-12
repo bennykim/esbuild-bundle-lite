@@ -1,6 +1,6 @@
-# esbuild-react-starter
+# mniii-bundle-lite
 
-An esbuild and React.js starter template for project setup.
+Setting up a simple esbuild-based bundle for React
 
 ## Overview
 
