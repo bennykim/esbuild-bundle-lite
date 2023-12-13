@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild";
-import { aliasConfig } from "./plugins/alias";
+import { aliasConfig } from "./plugins";
 import { prepareDistDirectory, createClientEnvironment } from "./common";
 import { CustomOptions } from "./config";
 

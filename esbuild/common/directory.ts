@@ -1,11 +1,11 @@
-import fs from "fs-extra";
+import { existsSync, rm, copy } from "fs-extra";
 
 const PUBLIC_DIR = "./public";
 
 export async function prepareDistDirectory(distDir: string): Promise<void> {
-  if (fs.existsSync(distDir)) {
-    await fs.rm(distDir, { recursive: true });
+  if (existsSync(distDir)) {
+    await rm(distDir, { recursive: true });
   }
 
-  await fs.copy(PUBLIC_DIR, distDir);
+  await copy(PUBLIC_DIR, distDir);
 }

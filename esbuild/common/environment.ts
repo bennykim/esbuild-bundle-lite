@@ -1,4 +1,4 @@
-import { transformKeys } from "../utils/format";
+import { transformKeys } from "../utils";
 
 export function createClientEnvironment(
   envObj: Record<string, any>
