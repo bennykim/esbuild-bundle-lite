@@ -1,26 +1,15 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "useDefineForClassFields": true,
+    "module": "esnext",
     "lib": [
       "es2020",
       "DOM",
       "DOM.Iterable"
     ],
-    "module": "esnext",
-    "skipLibCheck": true,
-    /* Bundler mode */
     "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
-    /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
     "paths": {
       "@/*": [
         "./src/*"
@@ -32,7 +21,9 @@
     "src"
   ],
   "exclude": [
-    "dist/**/*",
+    "dist",
+    "out",
+    "bundle",
     "node_modules"
   ]
 }

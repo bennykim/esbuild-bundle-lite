@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./bundle/esm",
+    "target": "es2020",
+    "module": "esnext",
+    "isolatedModules": true,
+  }
+}

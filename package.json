@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "description": "Setting up a simple esbuild-based bundle for React",
   "scripts": {
-    "compile-ts": "swc esbuild -d out",
-    "dev": "yarn compile-ts && node out/main --serve",
-    "build": "yarn compile-ts && node out/main --build"
+    "compile:swc": "swc esbuild -d out",
+    "compile:tsc": "tsc -p ./tsconfig.cjs.json && tsc -p ./tsconfig.esm.json",
+    "dev": "yarn compile:swc && node out/main --serve",
+    "build": "yarn compile:swc && node out/main --build",
+    "bundle": "yarn compile:tsc"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.63",

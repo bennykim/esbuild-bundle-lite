@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "outDir": "./bundle",
+    "strict": true
+  },
+  "include": [
+    "esbuild"
+  ],
+  "exclude": [
+    "node_modules",
+    "out",
+    "dist",
+    "src"
+  ]
+}
