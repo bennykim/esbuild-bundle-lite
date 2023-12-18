@@ -1,0 +1,64 @@
+name: Publish Library
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to deploy"
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.19.x"
+          cache: "yarn"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@bennykim"
+
+      - name: Set Yarn Version
+        id: set-version
+        run: |
+          yarn set version 4.0.2
+          echo "YARN_VERSION=$(yarn -v)" >> $GITHUB_OUTPUT
+
+      - name: Get cache dir path
+        id: yarn-cache-dir-path
+        run: echo "CACHE_DIR=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.CACHE_DIR }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ steps.set-version.outputs.YARN_VERSION }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-
+
+      - name: Install dependencies
+        run: |
+          CACHE_HIT="${{ steps.yarn-cache.outputs.cache-hit }}"
+          NODE_MODULES_EXISTS=$(test -d "node_modules" && echo "true" || echo "false")
+          if [[ "$CACHE_HIT" != 'true' || "$NODE_MODULES_EXISTS" == 'false' ]]; then
+            yarn install --immutable
+          fi
+
+      - name: Bundle Package
+        run: yarn bundle
+
+      - name: Configure Yarn for Authentication
+        run: yarn config set 'npmRegistries["https://npm.pkg.github.com"].npmAuthToken' ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Package
+        run: yarn npm publish

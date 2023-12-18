@@ -1,10 +1,10 @@
 {
-  "name": "mniii-bundle-lite",
-  "version": "0.1.0",
+  "name": "@bennykim/mbl",
+  "version": "0.1.0-RC1",
   "description": "Setting up a simple esbuild-based bundle for React",
   "scripts": {
     "compile:swc": "swc esbuild -d out",
-    "compile:tsc": "tsc -p ./tsconfig.cjs.json && tsc -p ./tsconfig.esm.json",
+    "compile:tsc": "tsc -p ./tsconfig.cjs.json --diagnostics && tsc -p ./tsconfig.esm.json --diagnostics",
     "dev": "yarn compile:swc && node out/main --serve",
     "build": "yarn compile:swc && node out/main --build",
     "bundle": "yarn compile:tsc"
@@ -26,5 +26,14 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "packageManager": "yarn@4.0.2"
+  "main": "bundle/cjs/main.js",
+  "module": "bundle/esm/main.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bennykim/mniii-bundle-lite.git"
+  },
+  "homepage": "https://github.com/bennykim/mniii-bundle-lite#readme"
 }
