@@ -4,5 +4,4 @@ dist
 out
 node_modules
 .yarn
-.yarnrc.yml
 .pnp*

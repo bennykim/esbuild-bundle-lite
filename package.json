@@ -1,7 +1,7 @@
 {
-  "name": "@bennykim/mbl",
-  "version": "0.1.0-RC1",
-  "description": "Setting up a simple esbuild-based bundle for React",
+  "name": "@mniii/ebl",
+  "version": "0.1.0-RC2",
+  "description": "Setting up a simple esbuild based bundle for React",
   "scripts": {
     "compile:swc": "swc esbuild -d out",
     "compile:tsc": "tsc -p ./tsconfig.cjs.json --diagnostics && tsc -p ./tsconfig.esm.json --diagnostics",
@@ -29,11 +29,11 @@
   "main": "bundle/cjs/main.js",
   "module": "bundle/esm/main.js",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bennykim/mniii-bundle-lite.git"
+    "url": "git+https://github.com/bennykim/esbuild-bundle-lite.git"
   },
-  "homepage": "https://github.com/bennykim/mniii-bundle-lite#readme"
+  "homepage": "https://github.com/bennykim/esbuild-bundle-lite#readme"
 }

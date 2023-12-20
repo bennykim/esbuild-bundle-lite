@@ -24,8 +24,6 @@ jobs:
         with:
           node-version: "18.19.x"
           cache: "yarn"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@bennykim"
 
       - name: Set Yarn Version
         id: set-version
@@ -57,8 +55,11 @@ jobs:
       - name: Bundle Package
         run: yarn bundle
 
+      - name: Create .npmrc file
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
       - name: Configure Yarn for Authentication
-        run: yarn config set 'npmRegistries["https://npm.pkg.github.com"].npmAuthToken' ${{ secrets.GITHUB_TOKEN }}
+        run: yarn config set 'npmRegistries["https://registry.npmjs.org"].npmAuthToken' ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Package
-        run: yarn npm publish
+        run: yarn npm publish --access public

@@ -1,10 +1,10 @@
-# mniii-bundle-lite
+# esbuild-bundle-lite
 
-Setting up a simple esbuild-based bundle for React
+EBL(esbuild-bundle-lite) is an esbuild-based bundling tool for React projects. The primary development content is focused in the esbuild folder, while the src folder exists for simple testing of esbuild.
 
 ## Overview
 
-This repository provides a simple boilerplate for setting up projects using esbuild and React.js. It includes configuration files and dependencies to get you started quickly.
+This repository offers configuration files and dependencies for quickly starting projects using React.js and esbuild. TypeScript compilation for testing purposes employs swc.
 
 ## Getting Started
 
@@ -26,6 +26,7 @@ This repository provides a simple boilerplate for setting up projects using esbu
 
 - `yarn dev`: Starts the development server.
 - `yarn build`: Builds the production-ready application.
+- `yarn bundle`: Prepares the application for production. It uses tsc to bundle the package in cjs and esm formats for publishing.
 
 ## Dependencies
 
@@ -33,4 +34,8 @@ This repository provides a simple boilerplate for setting up projects using esbu
 - [React](https://reactjs.org/): JavaScript library for building user interfaces.
 - [React DOM](https://reactjs.org/docs/react-dom.html): React package for working with the DOM.
 - [TypeScript](https://www.typescriptlang.org/): A typed superset of JavaScript.
-- [fs-extra](https://www.npmjs.com/package/fs-extra): File system utilities for Node.js.
+- [swc](https://swc.rs/): A super-fast compiler written in Rust, used for TypeScript compilation.
+
+## Publishing
+
+The package is published as @mniii/ebl.
