@@ -1,4 +1,4 @@
-import { existsSync, rm, copy } from "fs-extra";
+import { copy, existsSync, rm } from "fs-extra";
 
 const PUBLIC_DIR = "./public";
 

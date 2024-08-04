@@ -3,3 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 }
+
+img {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+}
