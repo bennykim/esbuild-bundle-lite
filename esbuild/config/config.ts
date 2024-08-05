@@ -1,5 +1,5 @@
 import { existsSync } from "fs";
-import { merge } from "lodash";
+import merge from "lodash/merge";
 import * as path from "path";
 
 import { BUNDLE_CONFIG_NAME, ESBUILD_CONFIG_NAME } from "../constants";
