@@ -1,5 +1,5 @@
 export function transformKeys(
-  obj: Record<string, any>
+  obj: Record<string, string | number | boolean>
 ): Record<string, string> {
   const transformedObj: Record<string, string> = {};
 

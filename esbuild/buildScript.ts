@@ -2,7 +2,7 @@ import * as esbuild from "esbuild";
 
 import { createClientEnvironment, prepareDistDirectory } from "./common";
 import { getCommonBuildConfig, type CustomOptions } from "./config";
-import { getPlugins } from "./plugins";
+import { aliasPlugin } from "./plugins";
 import { logger, measurePerformance } from "./utils";
 
 export const build = async (config: CustomOptions): Promise<void> => {
@@ -16,7 +16,8 @@ export const build = async (config: CustomOptions): Promise<void> => {
       minify: true,
       metafile: true,
       logLevel: "debug" as esbuild.LogLevel,
-      plugins: getPlugins(config.plugins),
+      plugins: config.plugins || [aliasPlugin],
+      entryNames: "[name]-[hash]",
     };
 
     const result = await measurePerformance("Build", () =>

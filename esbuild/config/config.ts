@@ -1,13 +1,19 @@
 import { existsSync } from "fs";
-import merge from "lodash/merge";
+import { merge } from "lodash";
 import * as path from "path";
 
 import { BUNDLE_CONFIG_NAME, ESBUILD_CONFIG_NAME } from "../constants";
-import { aliasConfig } from "../plugins";
 
 import { type BuildOptions } from "esbuild";
 
-export interface CustomOptions extends BuildOptions {
+export class ConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ConfigError";
+  }
+}
+
+export interface CustomOptions extends Omit<BuildOptions, "outdir"> {
   entry: string[];
   distDir: string;
   port: number;
@@ -18,7 +24,6 @@ export interface CustomOptions extends BuildOptions {
 export const defaultConfig: CustomOptions = {
   entry: ["src/index.tsx"],
   distDir: "dist",
-  outfile: "bundle.js",
   port: 3000,
   env: {},
   format: "esm",
@@ -53,10 +58,29 @@ export const createConfig = async (
 
 export const validateConfig = (config: CustomOptions): void => {
   if (!Array.isArray(config.entry) || config.entry.length === 0) {
-    throw new Error("Config error: entry must be a non-empty array");
+    throw new ConfigError("entry must be a non-empty array");
   }
   if (typeof config.distDir !== "string" || config.distDir.trim() === "") {
-    throw new Error("Config error: distDir must be a non-empty string");
+    throw new ConfigError("distDir must be a non-empty string");
+  }
+  if (
+    typeof config.port !== "number" ||
+    config.port < 1 ||
+    config.port > 65535
+  ) {
+    throw new ConfigError("port must be a valid port number (1-65535)");
+  }
+  if (
+    typeof config.format !== "string" ||
+    !["iife", "cjs", "esm"].includes(config.format)
+  ) {
+    throw new ConfigError("format must be one of 'iife', 'cjs', or 'esm'");
+  }
+  if (typeof config.splitting !== "boolean") {
+    throw new ConfigError("splitting must be a boolean value");
+  }
+  if (typeof config.loader !== "object" || config.loader === null) {
+    throw new ConfigError("loader must be an object");
   }
 };
 
@@ -64,15 +88,19 @@ export const getCommonBuildConfig = (
   config: CustomOptions,
   clientEnv: Record<string, string>
 ): BuildOptions => {
-  const { entry, loader, distDir, outfile } = config;
+  const { entry, loader, distDir } = config;
 
   return {
     entryPoints: entry,
     bundle: true,
     define: clientEnv,
     loader: loader,
-    plugins: [aliasConfig],
-    outfile: `${distDir}/${outfile}`,
+    plugins: [],
+    outdir: distDir,
+    entryNames: "bundle",
+    format: "esm",
     jsx: "automatic",
+    splitting: true,
+    chunkNames: "chunks/[name]-[hash]",
   };
 };
