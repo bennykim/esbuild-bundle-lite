@@ -8,7 +8,7 @@ import {
 } from "./constants";
 import { logger } from "./utils";
 
-const processCommand = async (
+export const processCommand = async (
   command: Command,
   configPath: string
 ): Promise<void> => {
@@ -28,7 +28,7 @@ const processCommand = async (
   }
 };
 
-const executeCommand = async (): Promise<void> => {
+export const executeCommand = async (): Promise<void> => {
   try {
     const commandToExecute = process.argv.find((arg): arg is Command =>
       [SERVE_COMMAND, BUILD_COMMAND].includes(arg as Command)

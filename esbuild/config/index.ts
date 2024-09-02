@@ -1,4 +1,5 @@
 export {
+  ConfigError,
   createConfig,
   defaultConfig,
   findConfigFile,

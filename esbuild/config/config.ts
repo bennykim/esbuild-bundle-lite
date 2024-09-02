@@ -4,7 +4,7 @@ import * as path from "path";
 
 import { BUNDLE_CONFIG_NAME, ESBUILD_CONFIG_NAME } from "../constants";
 
-import { type BuildOptions } from "esbuild";
+import { type BuildOptions, type Loader } from "esbuild";
 
 export class ConfigError extends Error {
   constructor(message: string) {
@@ -18,6 +18,7 @@ export interface CustomOptions extends Omit<BuildOptions, "outdir"> {
   distDir: string;
   port: number;
   env: Record<string, string>;
+  loader: Record<string, Loader>;
   _configSource?: string;
 }
 
