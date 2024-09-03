@@ -1,4 +1,4 @@
-import { Command, commandHandlers } from "./commands";
+import { type Command, commandHandlers } from "./commands";
 import { createConfig, findConfigFile } from "./config";
 import {
   BUILD_COMMAND,
@@ -19,12 +19,11 @@ export const processCommand = async (
     if (handler) {
       await handler(config);
     } else {
-      logger.error(`Invalid command: ${command}`);
-      process.exit(1);
+      throw new Error(`Invalid command: ${command}`);
     }
   } catch (error) {
     logger.error("Error processing command:", error);
-    process.exit(1);
+    throw error;
   }
 };
 
@@ -38,19 +37,20 @@ export const executeCommand = async (): Promise<void> => {
       const configPath = findConfigFile();
       await processCommand(commandToExecute, configPath);
     } else {
-      logger.error("No valid command found. Use --serve or --build.");
-      process.exit(1);
+      throw new Error("No valid command found. Use --serve or --build.");
     }
   } catch (error) {
     logger.error("Unhandled error:", error);
-    process.exit(1);
+    throw error;
   }
 };
 
-executeCommand().catch((error) => {
-  logger.error(
-    "Fatal error:",
-    error instanceof Error ? error.message : String(error)
-  );
-  process.exit(1);
-});
+if (require.main === module) {
+  executeCommand().catch((error) => {
+    logger.error(
+      "Fatal error:",
+      error instanceof Error ? error.message : String(error)
+    );
+    process.exit(1);
+  });
+}
