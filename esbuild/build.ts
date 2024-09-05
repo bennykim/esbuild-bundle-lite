@@ -11,12 +11,12 @@ export const build = async (config: CustomOptions): Promise<void> => {
   try {
     await prepareDistDirectory(distDir);
     const clientEnv = createClientEnvironment(env);
-    const buildConfig = {
+    const buildConfig: esbuild.BuildOptions = {
       ...getCommonBuildConfig(config, clientEnv),
       minify: true,
       metafile: true,
-      logLevel: "debug" as esbuild.LogLevel,
-      plugins: config.plugins || [aliasPlugin],
+      logLevel: "debug",
+      plugins: [aliasPlugin, ...(config.plugins || [])],
       entryNames: "[name]-[hash]",
     };
 
@@ -26,7 +26,7 @@ export const build = async (config: CustomOptions): Promise<void> => {
 
     if (result.metafile) {
       const analysis = await esbuild.analyzeMetafile(result.metafile);
-      logger.info("Build analysis:", analysis);
+      logger.info("Build analysis:\n" + analysis);
     } else {
       logger.warn("Metafile is undefined. Build analysis not available.");
     }

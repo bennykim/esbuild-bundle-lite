@@ -1,5 +1,5 @@
 import { type Command, commandHandlers } from "./commands";
-import { createConfig, findConfigFile } from "./config";
+import { findConfigFile, loadConfig } from "./config";
 import {
   BUILD_COMMAND,
   DEVELOPMENT,
@@ -13,7 +13,7 @@ export const processCommand = async (
   configPath: string
 ): Promise<void> => {
   try {
-    const config = await createConfig(configPath);
+    const config = await loadConfig(configPath);
     config.env.nodeEnv = command === SERVE_COMMAND ? DEVELOPMENT : PRODUCTION;
     const handler = commandHandlers[command];
     if (handler) {

@@ -1,6 +1,6 @@
 import { executeCommand, processCommand } from "../esbuild";
-import { Command, commandHandlers } from "../esbuild/commands";
-import { createConfig, findConfigFile } from "../esbuild/config";
+import { type Command, commandHandlers } from "../esbuild/commands";
+import { findConfigFile, loadConfig } from "../esbuild/config";
 import {
   BUILD_COMMAND,
   DEVELOPMENT,
@@ -11,7 +11,7 @@ import {
 import { logger } from "../esbuild/utils";
 
 jest.mock("../esbuild/config", () => ({
-  createConfig: jest.fn(),
+  loadConfig: jest.fn(),
   findConfigFile: jest.fn(),
 }));
 
@@ -40,11 +40,11 @@ describe("commandExecutor", () => {
           nodeEnv: "",
         },
       };
-      (createConfig as jest.Mock).mockResolvedValue(mockConfig);
+      (loadConfig as jest.Mock).mockResolvedValue(mockConfig);
 
       await processCommand(SERVE_COMMAND, ESBUILD_CONFIG_NAME);
 
-      expect(createConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
+      expect(loadConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
       expect(mockConfig.env.nodeEnv).toBe(DEVELOPMENT);
       expect(commandHandlers[SERVE_COMMAND]).toHaveBeenCalledWith(mockConfig);
     });
@@ -55,11 +55,11 @@ describe("commandExecutor", () => {
           nodeEnv: "",
         },
       };
-      (createConfig as jest.Mock).mockResolvedValue(mockConfig);
+      (loadConfig as jest.Mock).mockResolvedValue(mockConfig);
 
       await processCommand(BUILD_COMMAND, ESBUILD_CONFIG_NAME);
 
-      expect(createConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
+      expect(loadConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
       expect(mockConfig.env.nodeEnv).toBe(PRODUCTION);
       expect(commandHandlers[BUILD_COMMAND]).toHaveBeenCalledWith(mockConfig);
     });
@@ -75,7 +75,7 @@ describe("commandExecutor", () => {
     });
 
     it("should handle errors during command processing", async () => {
-      (createConfig as jest.Mock).mockRejectedValue(new Error("Config error"));
+      (loadConfig as jest.Mock).mockRejectedValue(new Error("Config error"));
 
       await expect(
         processCommand(SERVE_COMMAND, ESBUILD_CONFIG_NAME)
@@ -91,24 +91,24 @@ describe("commandExecutor", () => {
     it("should execute serve command", async () => {
       process.argv = ["node", "script.js", SERVE_COMMAND];
       (findConfigFile as jest.Mock).mockReturnValue(ESBUILD_CONFIG_NAME);
-      (createConfig as jest.Mock).mockResolvedValue({ env: {} });
+      (loadConfig as jest.Mock).mockResolvedValue({ env: {} });
 
       await executeCommand();
 
       expect(findConfigFile).toHaveBeenCalled();
-      expect(createConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
+      expect(loadConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
       expect(commandHandlers[SERVE_COMMAND]).toHaveBeenCalled();
     });
 
     it("should execute build command", async () => {
       process.argv = ["node", "script.js", BUILD_COMMAND];
       (findConfigFile as jest.Mock).mockReturnValue(ESBUILD_CONFIG_NAME);
-      (createConfig as jest.Mock).mockResolvedValue({ env: {} });
+      (loadConfig as jest.Mock).mockResolvedValue({ env: {} });
 
       await executeCommand();
 
       expect(findConfigFile).toHaveBeenCalled();
-      expect(createConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
+      expect(loadConfig).toHaveBeenCalledWith(ESBUILD_CONFIG_NAME);
       expect(commandHandlers[BUILD_COMMAND]).toHaveBeenCalled();
     });
 

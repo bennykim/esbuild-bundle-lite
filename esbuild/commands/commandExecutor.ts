@@ -1,8 +1,8 @@
-import { build } from "../buildScript";
+import { build } from "../build";
 import { BUILD_COMMAND, SERVE_COMMAND } from "../constants";
-import { serve } from "../serveScript";
+import { serve } from "../serve";
 
-import { type CustomOptions } from "../config";
+import type { CustomOptions } from "../config";
 
 export type Command = typeof SERVE_COMMAND | typeof BUILD_COMMAND;
 

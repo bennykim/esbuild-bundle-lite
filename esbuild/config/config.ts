@@ -4,7 +4,7 @@ import * as path from "path";
 
 import { BUNDLE_CONFIG_NAME, ESBUILD_CONFIG_NAME } from "../constants";
 
-import { type BuildOptions, type Loader } from "esbuild";
+import type { BuildOptions, Loader } from "esbuild";
 
 export class ConfigError extends Error {
   constructor(message: string) {
@@ -19,10 +19,9 @@ export interface CustomOptions extends Omit<BuildOptions, "outdir"> {
   port: number;
   env: Record<string, string>;
   loader: Record<string, Loader>;
-  _configSource?: string;
 }
 
-export const defaultConfig: CustomOptions = {
+const defaultConfig: CustomOptions = {
   entry: ["src/index.tsx"],
   distDir: "dist",
   port: 3000,
@@ -39,22 +38,7 @@ export const findConfigFile = (): string => {
       return filePath;
     }
   }
-  return `/${ESBUILD_CONFIG_NAME}`;
-};
-
-export const createConfig = async (
-  userConfigPath: string
-): Promise<CustomOptions> => {
-  let userConfig: Partial<CustomOptions> = {};
-  try {
-    userConfig = (await import(userConfigPath)).default;
-  } catch (error) {
-    console.warn(`Failed to load user config from ${userConfigPath}:`, error);
-  }
-
-  const mergedConfig = merge({}, defaultConfig, userConfig);
-  validateConfig(mergedConfig);
-  return mergedConfig;
+  return "";
 };
 
 export const validateConfig = (config: CustomOptions): void => {
@@ -85,23 +69,41 @@ export const validateConfig = (config: CustomOptions): void => {
   }
 };
 
+export const loadConfig = async (
+  configPath?: string
+): Promise<CustomOptions> => {
+  const userConfigPath = configPath || findConfigFile();
+  let userConfig: Partial<CustomOptions> = {};
+
+  if (userConfigPath) {
+    try {
+      userConfig = (await import(userConfigPath)).default;
+    } catch (error) {
+      console.warn(`Failed to load user config from ${userConfigPath}:`, error);
+    }
+  }
+
+  const mergedConfig = merge({}, defaultConfig, userConfig);
+  validateConfig(mergedConfig);
+  return mergedConfig;
+};
+
 export const getCommonBuildConfig = (
   config: CustomOptions,
   clientEnv: Record<string, string>
 ): BuildOptions => {
-  const { entry, loader, distDir } = config;
+  const { entry, loader, distDir, format, splitting } = config;
 
   return {
     entryPoints: entry,
     bundle: true,
     define: clientEnv,
-    loader: loader,
-    plugins: [],
+    loader,
     outdir: distDir,
     entryNames: "bundle",
-    format: "esm",
+    format,
     jsx: "automatic",
-    splitting: true,
+    splitting,
     chunkNames: "chunks/[name]-[hash]",
   };
 };

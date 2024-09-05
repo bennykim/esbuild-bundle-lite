@@ -1,7 +1,7 @@
 // src/__tests__/build.test.ts
 import * as esbuild from "esbuild";
 
-import { build } from "../esbuild/buildScript";
+import { build } from "../esbuild/build";
 import {
   createClientEnvironment,
   prepareDistDirectory,
@@ -72,8 +72,7 @@ describe("build", () => {
     );
     expect(esbuild.analyzeMetafile).toHaveBeenCalledWith({});
     expect(logger.info).toHaveBeenCalledWith(
-      "Build analysis:",
-      "Build analysis"
+      "Build analysis:\n" + "Build analysis"
     );
     expect(logger.info).toHaveBeenCalledWith("Build Successful.");
   });

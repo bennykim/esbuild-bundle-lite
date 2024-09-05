@@ -1,9 +1,8 @@
 export {
   ConfigError,
-  createConfig,
-  defaultConfig,
+  CustomOptions,
   findConfigFile,
   getCommonBuildConfig,
+  loadConfig,
   validateConfig,
-  type CustomOptions,
 } from "./config";
