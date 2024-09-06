@@ -1,4 +1,3 @@
-// src/__tests__/build.test.ts
 import * as esbuild from "esbuild";
 
 import { build } from "../esbuild/build";
@@ -101,7 +100,7 @@ describe("build", () => {
     await expect(build(mockConfig)).rejects.toThrow(
       "Process.exit called with code 1"
     );
-    expect(logger.error).toHaveBeenCalledWith("Build failed:", "Build failed");
+    expect(logger.error).toHaveBeenCalledWith("Build failed:", error.message);
     expect(mockExit).toHaveBeenCalledWith(1);
 
     mockExit.mockRestore();
