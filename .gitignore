@@ -1,9 +1,15 @@
+# Dev environment
 .vscode
-bundle
-dist
-out
 node_modules
 .yarn
 .pnp*
 .DS_Store
+
+# Build output
+bundle
+dist
+out
+
+# Logs
 .log
+esbuild.build.log

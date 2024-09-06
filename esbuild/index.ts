@@ -1,56 +1,62 @@
-import { type Command, commandHandlers } from "./commands";
+#!/usr/bin/env node
+
+import { Command } from "commander";
+import { build } from "./build";
 import { findConfigFile, loadConfig } from "./config";
-import {
-  BUILD_COMMAND,
-  DEVELOPMENT,
-  PRODUCTION,
-  SERVE_COMMAND,
-} from "./constants";
+import { DEVELOPMENT, PRODUCTION } from "./constants";
+import { serve } from "./serve";
 import { logger } from "./utils";
 
-export const processCommand = async (
-  command: Command,
-  configPath: string
-): Promise<void> => {
+export const handleDevCommand = async () => {
   try {
+    const configPath = findConfigFile();
     const config = await loadConfig(configPath);
-    config.env.nodeEnv = command === SERVE_COMMAND ? DEVELOPMENT : PRODUCTION;
-    const handler = commandHandlers[command];
-    if (handler) {
-      await handler(config);
-    } else {
-      throw new Error(`Invalid command: ${command}`);
-    }
+    config.env.nodeEnv = DEVELOPMENT;
+    await serve(config);
   } catch (error) {
-    logger.error("Error processing command:", error);
-    throw error;
+    logger.error("Error starting development server:", error);
+    process.exit(1);
   }
 };
 
-export const executeCommand = async (): Promise<void> => {
+export const handleBuildCommand = async () => {
   try {
-    const commandToExecute = process.argv.find((arg): arg is Command =>
-      [SERVE_COMMAND, BUILD_COMMAND].includes(arg as Command)
-    );
-
-    if (commandToExecute) {
-      const configPath = findConfigFile();
-      await processCommand(commandToExecute, configPath);
-    } else {
-      throw new Error("No valid command found. Use --serve or --build.");
-    }
+    const configPath = findConfigFile();
+    const config = await loadConfig(configPath);
+    config.env.nodeEnv = PRODUCTION;
+    await build(config);
   } catch (error) {
-    logger.error("Unhandled error:", error);
-    throw error;
+    logger.error("Error building for production:", error);
+    process.exit(1);
   }
+};
+
+export const setupCLI = () => {
+  const program = new Command();
+
+  program
+    .name("ebl")
+    .description("esbuild-based bundler for React")
+    .version("0.1.0-RC2");
+
+  program
+    .command("dev")
+    .description("Start development server")
+    .action(handleDevCommand);
+
+  program
+    .command("build")
+    .description("Build for production")
+    .action(handleBuildCommand);
+
+  return program;
 };
 
 if (require.main === module) {
-  executeCommand().catch((error) => {
-    logger.error(
-      "Fatal error:",
-      error instanceof Error ? error.message : String(error)
-    );
-    process.exit(1);
-  });
+  const program = setupCLI();
+  program.parse(process.argv);
+
+  if (!process.argv.slice(2).length) {
+    program.outputHelp();
+  }
 }

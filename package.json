@@ -1,14 +1,17 @@
 {
   "name": "@mniii/ebl",
   "version": "0.1.0-RC2",
-  "description": "Setting up a simple esbuild based bundle for React",
+  "description": "esbuild-based bundler for React",
   "scripts": {
     "compile:swc": "swc esbuild -d out --config-file .swcrc",
-    "compile:tsc": "tsc -p ./tsconfig.cjs.json --diagnostics && tsc -p ./tsconfig.esm.json --diagnostics",
-    "dev": "nodemon --watch esbuild --exec \"yarn compile:swc && node out/index --serve\"",
-    "build": "yarn compile:swc && node out/index --build",
+    "compile:tsc:cjs": "tsc -p ./tsconfig.cjs.json --diagnostics",
+    "compile:tsc:esm": "tsc -p ./tsconfig.esm.json --diagnostics",
+    "compile:tsc": "yarn compile:tsc:cjs && yarn compile:tsc:esm",
+    "dev": "nodemon --watch esbuild --ext ts,js,json --exec \"yarn compile:swc && node out/index dev\"",
+    "build": "yarn compile:swc && node out/index build",
     "bundle": "yarn compile:tsc",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "main": "bundle/cjs/index.js",
   "module": "bundle/esm/index.js",
@@ -21,6 +24,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
+    "commander": "^12.1.0",
     "esbuild": "^0.19.9",
     "esbuild-plugin-alias-path": "^2.0.2",
     "fs-extra": "^11.1.1",
@@ -43,6 +47,9 @@
     "nodemon": "^3.1.4",
     "ts-jest": "^29.2.5",
     "typescript": "^5.3.3"
+  },
+  "bin": {
+    "ebl": "./out/index.js"
   },
   "keywords": [
     "esbuild",
